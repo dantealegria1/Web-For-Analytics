@@ -26,7 +26,7 @@ public class ClusteringService : IClusteringService
 	
 	private List<ReportFeatures> ExtractFeatures(IEnumerable<Report> reports)
     {
-        var reportsByAccount = reports.GroupBy(r => r.Accounts);
+        var reportsByAccount = reports.GroupBy(r => r.AccountMembers);
         
         return reportsByAccount.Select(group => new ReportFeatures
         {
