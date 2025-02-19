@@ -1,0 +1,100 @@
+@* Views/ClusteringAnalysis/Results.cshtml *@
+@using Web_Application_for_Analytics_Data.Services
+@model Web_Application_for_Analytics_Data.Models.Clustering
+
+@{
+    ViewData["Title"] = "Clustering Analysis";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Report Usage Clustering Analysis</h2>
+    <p class="text-muted">Analysis performed on @Model.AnalysisDate.ToString("f")</p>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Accounts</h5>
+                    <p class="card-text display-4">@Model.TotalAccounts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clusters -->
+    <div class="row">
+        @foreach (var cluster in Model.Results.Clusters)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header @GetHeaderClass(cluster.UsageLevel)">
+                        <h5 class="card-title mb-0 text-white">@cluster.UsageLevel Usage Cluster</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Accounts:</strong> @cluster.AccountCount</li>
+                            <li><strong>Average Reports/Day:</strong> @cluster.AverageReportsPerDay.ToString("F2")</li>
+                            <li><strong>Average Completion Time:</strong> @cluster.AverageCompletionTime.ToString("F2") hours</li>
+                        </ul>
+                        
+                        <button class="btn btn-sm btn-outline-primary" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#accounts-@cluster.UsageLevel">
+                            View Accounts
+                        </button>
+                        
+                        <div class="collapse mt-2" id="accounts-@cluster.UsageLevel">
+                            <div class="card card-body">
+                                <ul class="list-unstyled">
+                                    @foreach (var account in cluster.Accounts)
+                                    {
+                                        <li>@account</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Insights -->
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">Analysis Insights</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                @foreach (var insight in Model.Results.Insights)
+                {
+                    <li class="list-group-item">@insight</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetHeaderClass(UsageLevel level)
+    {
+        return level switch
+        {
+            UsageLevel.High => "bg-success",
+            UsageLevel.Medium => "bg-warning",
+            UsageLevel.Low => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        // Initialize all tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

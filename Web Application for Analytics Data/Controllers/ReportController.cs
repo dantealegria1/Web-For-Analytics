@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Web_Application_for_Analytics_Data.Models;
 using Web_Application_for_Analytics_Data.Services;
-using X.PagedList;  // Make sure you have this
-using System;
-using System.Linq;
 using X.PagedList.Extensions;
 
 namespace Web_Application_for_Analytics_Data.Controllers;
