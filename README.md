@@ -63,13 +63,3 @@ Contributions are welcome! To contribute:
 
 
 👨‍💻 **Developed by [Dante Alegria](https://github.com/dantealegria1)**
-
----
-
-### **What’s Included?**
-✅ **Clear project overview**  
-✅ **Installation and setup instructions**  
-✅ **Usage guide for filtering and analytics**  
-✅ **Contributing guide for open-source contributions**  
-✅ **Screenshots to visually represent the project**  
-
