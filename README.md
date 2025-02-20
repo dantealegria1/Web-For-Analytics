@@ -1,9 +1,3 @@
-Here's a **README.md** for your project with a clean structure, including a project description, features, installation steps, usage guide, and contribution instructions.  
-
----
-
-### **README.md**
-```md
 # 📊 Report Consultation & Analytics Dashboard
 
 This web application allows users to **filter, analyze, and visualize report data** efficiently. It features a report consultation interface and an analytics dashboard to gain insights into report completion times, frequency, and other key metrics.
@@ -69,7 +63,6 @@ Contributions are welcome! To contribute:
 
 
 👨‍💻 **Developed by [Dante Alegria](https://github.com/dantealegria1)**
-```
 
 ---
 
@@ -80,4 +73,3 @@ Contributions are welcome! To contribute:
 ✅ **Contributing guide for open-source contributions**  
 ✅ **Screenshots to visually represent the project**  
 
-This README makes your project look **professional and well-documented**! 🚀 Let me know if you'd like any modifications.
