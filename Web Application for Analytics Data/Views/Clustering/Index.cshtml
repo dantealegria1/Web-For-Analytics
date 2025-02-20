@@ -7,7 +7,7 @@
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">Report Usage Clustering Analysis</h2>
+    <h2 class="mb-4">Report Performance Clustering Analysis</h2>
     <p class="text-muted">Analysis performed on @Model.AnalysisDate.ToString("f")</p>
 
     <!-- Summary Cards -->
@@ -28,8 +28,8 @@
         {
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <div class="card-header @GetHeaderClass(cluster.UsageLevel)">
-                        <h5 class="card-title mb-0 text-white">@cluster.UsageLevel Usage Cluster</h5>
+                    <div class="card-header @GetHeaderClass(cluster.PerformanceLevel)">
+                        <h5 class="card-title mb-0 text-white">@cluster.PerformanceLevel Performance Cluster</h5>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">
@@ -40,11 +40,11 @@
                         
                         <button class="btn btn-sm btn-outline-primary" type="button" 
                                 data-bs-toggle="collapse" 
-                                data-bs-target="#accounts-@cluster.UsageLevel">
+                                data-bs-target="#accounts-@cluster.PerformanceLevel">
                             View Accounts
                         </button>
                         
-                        <div class="collapse mt-2" id="accounts-@cluster.UsageLevel">
+                        <div class="collapse mt-2" id="accounts-@cluster.PerformanceLevel">
                             <div class="card card-body">
                                 <ul class="list-unstyled">
                                     @foreach (var account in cluster.Accounts)
@@ -77,13 +77,13 @@
 </div>
 
 @functions {
-    private string GetHeaderClass(UsageLevel level)
+    private string GetHeaderClass(PerformanceLevel level)
     {
         return level switch
         {
-            UsageLevel.High => "bg-success",
-            UsageLevel.Medium => "bg-warning",
-            UsageLevel.Low => "bg-danger",
+            PerformanceLevel.High => "bg-success",
+            PerformanceLevel.Medium => "bg-warning",
+            PerformanceLevel.Low => "bg-danger",
             _ => "bg-secondary"
         };
     }

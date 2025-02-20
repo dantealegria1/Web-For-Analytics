@@ -5,6 +5,9 @@
     ViewData["Title"] = "Report Consultation";
 }
 
+<link rel="stylesheet" href="~/css/report.css" asp-append-version="true" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <div class="container">
     <h2>Report Consultation</h2>
 
@@ -28,8 +31,22 @@
                     <input asp-for="ReportId" class="form-control" />
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Account"></label>
+                    <input asp-for="Account" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="AccountId"></label>
+                    <input asp-for="AccountId" class="form-control" />
+                </div>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
+        <button type="button" id="clearFilters" class="btn btn-primary mt-3">Clear Filters</button>
+
     </form>
 
     @if (Model.Reports?.Any() == true)
@@ -71,3 +88,34 @@
         </div>
     }
 </div>
+
+<script>
+    document.getElementById("clearFilters").addEventListener("click", function () {
+        const form = document.querySelector("form");
+        form.reset(); // Reset the form fields
+
+        // Optionally, clear input values manually if reset() doesn't work as expected
+        document.querySelectorAll("input").forEach(input => input.value = "");
+
+        // Submit the form to refresh the results
+        form.submit();
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var errorMessage = '@TempData["ErrorMessage"]';
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: errorMessage,
+            });
+        }
+    });
+</script>
+
+
+
+
+

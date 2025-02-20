@@ -16,9 +16,14 @@ public class Filter
 	public DateTime? StartDate { get; set; }        
 	[Display(Name = "End Date")]
 	[DataType(DataType.Date)]
-	public DateTime? EndDate { get; set; }          
+	public DateTime? EndDate { get; set; }				
 	[Display(Name = "Report Identifier")]
 	public string ReportId { get; set; }           
+	[Display(Name = "Account Member")]
+	public string AccountId { get; set; }
+	
+	[Display(Name = "Account")]
+	public string Account { get; set; }
 	public IPagedList<Report> Reports { get; set; }
 	
 }

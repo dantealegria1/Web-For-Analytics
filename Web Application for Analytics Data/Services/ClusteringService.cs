@@ -62,8 +62,8 @@ public class ClusteringService : IClusteringService
         // Apply K-Means clustering
         var kmeans = new KMeans(k: 3)
         {
-            MaxIterations = 100,
-            Tolerance = 0.001
+            MaxIterations = 1000,
+            Tolerance = 0.0001
         };
 
         // Compute clusters
@@ -99,13 +99,13 @@ public class ClusteringService : IClusteringService
                 .Where((f, index) => clusteringOutput.ClusterLabels[index] == i)
                 .ToList();
 
-            var usage = DetermineUsageLevel(
+            var performance = DeterminePerformanceLevel(
                 clusteringOutput.Centroids[i], 
                 clusteringOutput.Centroids);
 
             results.Clusters.Add(new ClusterInfo
             {
-                UsageLevel = usage,
+                PerformanceLevel = performance,
                 AccountCount = clusterAccounts.Count,
                 AverageCompletionTime = clusterAccounts.Average(f => f.AverageCompletionTime),
                 AverageReportsPerDay = clusterAccounts.Average(f => f.ReportFrequency),
@@ -117,33 +117,55 @@ public class ClusteringService : IClusteringService
         return results;
     }
 
-    private UsageLevel DetermineUsageLevel(double[] centroid, double[][] allCentroids)
+    private PerformanceLevel DeterminePerformanceLevel(double[] centroid, double[][] allCentroids)
     {
-        // Calculate overall activity level based on centroid values
-        var activityScore = centroid.Sum();
-        var scores = allCentroids.Select(c => c.Sum()).OrderDescending().ToList();
+        // Calculate overall performance level based on centroid values
+        // Higher activity score + lower completion time = higher performance
+        double completionTimeWeight = -1.0; // Negative weight as lower completion time is better
+        double reportFrequencyWeight = 1.0;  // Positive weight as more reports is better
         
-        if (activityScore == scores[0]) return UsageLevel.High;
-        if (activityScore == scores[1]) return UsageLevel.Medium;
-        return UsageLevel.Low;
+        var performanceScore = (centroid[0] * completionTimeWeight) + 
+                              (centroid[1] * reportFrequencyWeight) + 
+                              (centroid[2] * reportFrequencyWeight);
+        
+        var scores = allCentroids
+            .Select(c => (c[0] * completionTimeWeight) + 
+                         (c[1] * reportFrequencyWeight) + 
+                         (c[2] * reportFrequencyWeight))
+            .OrderDescending()
+            .ToList();
+        
+        if (Math.Abs(performanceScore - scores[0]) < 0.001) return PerformanceLevel.High;
+        if (Math.Abs(performanceScore - scores[1]) < 0.001) return PerformanceLevel.Medium;
+        return PerformanceLevel.Low;
     }
 
     private List<string> GenerateInsights(List<ClusterInfo> clusters)
     {
         var insights = new List<string>();
         
-        var highUsageCluster = clusters.FirstOrDefault(c => c.UsageLevel == UsageLevel.High);
-        if (highUsageCluster != null)
+        var highPerformanceCluster = clusters.FirstOrDefault(c => c.PerformanceLevel == PerformanceLevel.High);
+        if (highPerformanceCluster != null)
         {
-            insights.Add($"High-usage accounts ({highUsageCluster.AccountCount} accounts) " +
-                        $"submit an average of {highUsageCluster.AverageReportsPerDay:F1} reports per day");
+            insights.Add($"High-performance accounts ({highPerformanceCluster.AccountCount} accounts) " +
+                        $"submit an average of {highPerformanceCluster.AverageReportsPerDay:F1} reports per day"+
+                        $"These accounts might benefit from advanced features or early access to new capabilities"+
+                        $"Examine what makes these accounts successful - their workflows and practices could be used as best practices");
         }
-
-        var lowUsageCluster = clusters.FirstOrDefault(c => c.UsageLevel == UsageLevel.Low);
-        if (lowUsageCluster != null)
+		
+        var medianPerformanceCluster = clusters.FirstOrDefault(c => c.PerformanceLevel == PerformanceLevel.Medium);
+        if (medianPerformanceCluster != null)
         {
-            insights.Add($"Low-usage accounts ({lowUsageCluster.AccountCount} accounts) might " +
-                        "benefit from additional training or engagement initiatives");
+	        insights.Add($"Medium-performance accounts ({medianPerformanceCluster.AccountCount} accounts)"+
+	                     $"Target training or workflow improvements to help them improve efficiency"+
+	                     $"Identify specific bottlenecks preventing them from reaching high performance");
+        }
+        var lowPerformanceCluster = clusters.FirstOrDefault(c => c.PerformanceLevel == PerformanceLevel.Low);
+        if (lowPerformanceCluster != null)
+        {
+            insights.Add($"Low-performance accounts ({lowPerformanceCluster.AccountCount} accounts) might " +
+                        "benefit from additional training or engagement initiatives"+
+                        $"Investigate the root causes: Is it lack of training, technical issues, or process inefficiencies?");
         }
 
         return insights;
@@ -172,14 +194,14 @@ public class ClusteringResults
 
 public class ClusterInfo
 {
-	public UsageLevel UsageLevel { get; set; }
+	public PerformanceLevel PerformanceLevel { get; set; }
 	public int AccountCount { get; set; }
 	public double AverageCompletionTime { get; set; }
 	public double AverageReportsPerDay { get; set; }
 	public List<string> Accounts { get; set; }
 }
 
-public enum UsageLevel
+public enum PerformanceLevel
 {
 	Low,
 	Medium,

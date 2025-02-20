@@ -13,26 +13,27 @@ public class ReportController(ICsvService csvService) : Controller
 	{
 		var reports = csvService.GetReports();
 
+		if (filter.EndDate.HasValue && filter.StartDate.HasValue && filter.EndDate < filter.StartDate)
+		{
+			TempData["ErrorMessage"] = "End Date cannot be earlier than Start Date!";
+			return (View(filter));
+		}
+
 		// Apply filters
 		if (filter.StartDate.HasValue)
 			reports = reports.Where(r => r.CreationDate >= filter.StartDate);
-        
+
 		if (filter.EndDate.HasValue)
-		{
-			if (filter.EndDate < filter.StartDate)
-			{
-				ModelState.AddModelError("EndDate", "End Date cannot be earlier than Start Date");
-				return View(filter);
-			}
 			reports = reports.Where(r => r.CreationDate <= filter.EndDate);
-		}
 
 		if (!string.IsNullOrEmpty(filter.ReportId))
 			reports = reports.Where(r => r.ReportId != null && 
 			                             r.ReportId.IndexOf(filter.ReportId, StringComparison.OrdinalIgnoreCase) >= 0);
+    
 		// Apply pagination
 		filter.Reports = reports.ToPagedList(page, PageSize);
 
 		return View(filter);
 	}
+
 }
