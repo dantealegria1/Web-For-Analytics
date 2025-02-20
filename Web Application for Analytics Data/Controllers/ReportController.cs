@@ -25,6 +25,12 @@ public class ReportController(ICsvService csvService) : Controller
 
 		if (filter.EndDate.HasValue)
 			reports = reports.Where(r => r.CreationDate <= filter.EndDate);
+		
+		if(filter.Account != null)
+			reports = reports.Where(r => r.Accounts.Contains(filter.Account));
+
+		if (filter.AccountId != null)
+			reports = reports.Where(r => r.AccountMembers == filter.AccountId);
 
 		if (!string.IsNullOrEmpty(filter.ReportId))
 			reports = reports.Where(r => r.ReportId != null && 
