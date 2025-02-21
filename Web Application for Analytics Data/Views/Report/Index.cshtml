@@ -6,6 +6,7 @@
 }
 
 <link rel="stylesheet" href="~/css/report.css" asp-append-version="true" />
+<!-- SweetAlert2 library remains included from CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="container">
@@ -46,7 +47,6 @@
         </div>
         <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
         <button type="button" id="clearFilters" class="btn btn-primary mt-3">Clear Filters</button>
-
     </form>
 
     @if (Model.Reports?.Any() == true)
@@ -54,14 +54,14 @@
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th>Report ID</th>
-                    <th>Creation Date</th>
-                    <th>Completion Date</th>
-                    <th>Report Period</th>
-                    <th>Accounts</th>
-                    <th>Account Members</th>
-                </tr>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Creation Date</th>
+                        <th>Completion Date</th>
+                        <th>Report Period</th>
+                        <th>Accounts</th>
+                        <th>Account Members</th>
+                    </tr>
                 </thead>
                 <tbody>
                 @foreach (var report in Model.Reports)
@@ -89,30 +89,16 @@
     }
 </div>
 
+<!-- Pass server-side error message to a global JS variable -->
 <script>
-    document.getElementById("clearFilters").addEventListener("click", function () {
-        const form = document.querySelector("form");
-        form.reset(); // Reset the form fields
-
-        // Optionally, clear input values manually if reset() doesn't work as expected
-        document.querySelectorAll("input").forEach(input => input.value = "");
-
-        // Submit the form to refresh the results
-        form.submit();
-    });
+    var errorMessage = '@TempData["ErrorMessage"]';
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var errorMessage = '@TempData["ErrorMessage"]';
-        if (errorMessage) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: errorMessage,
-            });
-        }
-    });
-</script>
-
+@section Scripts {
+    <!-- External file for clear filters functionality -->
+    <script src="~/js/reportPage.js"></script>
+    <!-- External file for SweetAlert popup functionality -->
+    <script src="~/js/errorPopup.js"></script>
+    <script src="js/site.js"></script>
+}
 
