@@ -1,5 +1,5 @@
 @model Filter
-@using X.PagedList
+
 @using X.PagedList.Mvc.Core
 @{
     ViewData["Title"] = "Report Consultation";
@@ -68,8 +68,8 @@
                 {
                     <tr>
                         <td>@report.ReportId</td>
-                        <td>@report.CreationDate.ToShortDateString()</td>
-                        <td>@report.CompletionDate.ToShortDateString()</td>
+                        <td>@report.CreationDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@report.CompletionDate.ToString("dd/MM/yyyy HH:mm")</td>
                         <td>@report.ReportStartDate.ToShortDateString() - @report.ReportEndDate.ToShortDateString()</td>
                         <td>@report.Accounts</td>
                         <td>@report.AccountMembers</td>
@@ -114,8 +114,5 @@
         }
     });
 </script>
-
-
-
 
 
